@@ -21,14 +21,16 @@ module.exports = function (grunt) {
     // configurable paths
     var yeomanConfig = {
         app: 'app',
-        dist: 'dist'
+        dist: 'dist',
+        lib: 'lib',
+        build: 'build'
     };
 
     grunt.initConfig({
         yeoman: yeomanConfig,
         watch: {
             emberTemplates: {
-                files: '<%= yeoman.app %>/templates/**/*.hbs',
+                files: ['<%= yeoman.app %>/templates/**/*.hbs'],
                 tasks: ['emberTemplates']
             },
             compass: {
@@ -39,6 +41,13 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
                 tasks: ['neuter']
             },
+            lib: {
+              files: [
+                '<%= yeoman.lib %>/templates/{,*/}*.hbs',
+                '<%= yeoman.lib %>/**/*.js'
+              ],
+              tasks: ['lib']
+            },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
@@ -47,7 +56,9 @@ module.exports = function (grunt) {
                     '.tmp/scripts/*.js',
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
-                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+                    '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+                    '<%= yeoman.lib %>/templates/{,*/}*.hbs',
+                    '<%= yeoman.lib %>/**/*.js'
                 ]
             }
         },
@@ -63,7 +74,8 @@ module.exports = function (grunt) {
                         return [
                             lrSnippet,
                             mountFolder(connect, '.tmp'),
-                            mountFolder(connect, yeomanConfig.app)
+                            mountFolder(connect, yeomanConfig.app),
+                            mountFolder(connect, yeomanConfig.build)
                         ];
                     }
                 }
@@ -262,13 +274,13 @@ module.exports = function (grunt) {
         copy: {
             fonts: {
                 files: [
-                    { 
+                    {
                         expand: true,
                         flatten: true,
                         filter: 'isFile',
                         cwd: '<%= yeoman.app %>/bower_components/',
                         dest: '<%= yeoman.app %>/styles/fonts/',
-                        src: [ 
+                        src: [
                             'bootstrap-sass/dist/fonts/**', // Bootstrap
                             'font-awesome/fonts/**' // Font-Awesome
                         ]
@@ -313,12 +325,20 @@ module.exports = function (grunt) {
             options: {
                 templateName: function (sourceFile) {
                     var templatePath = yeomanConfig.app + '/templates/';
-                    return sourceFile.replace(templatePath, '');
+                    sourceFile = sourceFile.replace(templatePath, '');
+                    var libTemplatePath = yeomanConfig.lib + '/templates/';
+                    sourceFile = sourceFile.replace(libTemplatePath, '');
+                    return sourceFile;
                 }
             },
             dist: {
                 files: {
                     '.tmp/scripts/compiled-templates.js': '<%= yeoman.app %>/templates/{,*/}*.hbs'
+                }
+            },
+            lib: {
+                files: {
+                  'build/temp/template.js': '<%= yeoman.lib %>/templates/{,*/}*.hbs'
                 }
             }
         },
@@ -331,6 +351,17 @@ module.exports = function (grunt) {
                 },
                 src: '<%= yeoman.app %>/scripts/app.js',
                 dest: '.tmp/scripts/combined-scripts.js'
+            },
+            lib: {
+              options: {
+                  /*
+                  filepathTransform: function (filepath) {
+                      return yeomanConfig.lib + '/' + filepath;
+                  }
+                  */
+              },
+              src: '<%= yeoman.lib %>/lib.js',
+              dest: '<%= yeoman.build %>/ember-nvd3.js'
             }
         }
     });
@@ -347,6 +378,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'lib',
             'replace:app',
             'concurrent:server',
             'neuter:app',
@@ -368,6 +400,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'lib',
         'replace:dist',
         'useminPrepare',
         'concurrent:dist',
@@ -378,6 +411,11 @@ module.exports = function (grunt) {
         'copy',
         'rev',
         'usemin'
+    ]);
+
+    grunt.registerTask('lib', [
+        'emberTemplates:lib',
+        'neuter:lib'
     ]);
 
     grunt.registerTask('default', [

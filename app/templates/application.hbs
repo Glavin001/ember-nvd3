@@ -13,22 +13,6 @@
         </div>
     </nav>
     <div class="container" id="main">
-        <div class="row">
-            <div>
-                <div class="col-md-3">
-                    <div class="well sidebar-nav">
-                        <strong>Colors</strong>
-                        <ul class="list-group">
-                        {{#each item in controller}}
-                            <li class="list-group-item">{{item}}</li>
-                        {{/each}}
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-9">
-                    {{outlet}}
-                </div>
-            </div>
-        </div>
+        {{outlet}}
     </div>
 </div>
