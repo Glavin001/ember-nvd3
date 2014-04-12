@@ -1,6 +1,18 @@
-<div class="well">
-    Welcome to Yeoman and Ember.js!
+<style>
+  svg.ember-nvd3 {
+    height: 300px;
+  }
+</style>
 
-    {{nvd3-chart classNames="test"}}
+<div class="">
+    <h1>Welcome to Ember NVD3</h1>
+
+    <button {{action "refresh"}} class="form-control">Refresh</button>
+
+    <h2>Sparkline Plus</h2>
+    {{nvd3-sparkline-plus data=sparklinePlusData}}
+
+    <h2>Line Chart</h2>
+    {{nvd3-line-with-focus data=lineData}}
 
 </div>

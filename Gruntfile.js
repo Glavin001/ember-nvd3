@@ -30,8 +30,11 @@ module.exports = function (grunt) {
         yeoman: yeomanConfig,
         watch: {
             emberTemplates: {
-                files: ['<%= yeoman.app %>/templates/**/*.hbs'],
-                tasks: ['emberTemplates']
+                files: [
+                  '<%= yeoman.app %>/templates/**/*.hbs',
+                  '<%= yeoman.app %>/index.html'
+                ],
+                tasks: ['emberTemplates', 'replace:app']
             },
             compass: {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -43,7 +46,7 @@ module.exports = function (grunt) {
             },
             lib: {
               files: [
-                '<%= yeoman.lib %>/templates/{,*/}*.hbs',
+                '<%= yeoman.lib %>/templates/**/*.hbs',
                 '<%= yeoman.lib %>/**/*.js'
               ],
               tasks: ['lib']
@@ -57,6 +60,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+                    '<%= yeoman.app %>/index.html',
                     '<%= yeoman.lib %>/templates/{,*/}*.hbs',
                     '<%= yeoman.lib %>/**/*.js'
                 ]

@@ -7,11 +7,19 @@
         <!-- build:css styles/main.css -->
         <link rel="stylesheet" href="styles/style.css">
         <!-- endbuild -->
+
+        <!-- build:css(app) styles/nvd3.css -->
+        <link rel="stylesheet" href="bower_components/nvd3/nv.d3.min.css">
+        <!-- endbuild -->
+
+
 </head>
     <body>
         <!-- build:js(app) scripts/components.js -->
-        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
         <script src="bower_components/handlebars/handlebars.runtime.js"></script>
+        <script src="bower_components/d3/d3.js"></script>
+        <script src="bower_components/nvd3/nv.d3.js"></script>
         <script src="@@ember"></script>
         <script src="@@ember_data"></script>
         <!-- endbuild -->
