@@ -165,7 +165,7 @@ Ember.NVD3.ChartComponent = Ember.Component.extend({
 
 (function() {
 
-Ember.NVD3.LineWithFocus = Ember.NVD3.ChartComponent.extend({
+Ember.NVD3.LineWithFocusChart = Ember.NVD3.ChartComponent.extend({
 
   marginRight: 70,
 
@@ -175,7 +175,7 @@ Ember.NVD3.LineWithFocus = Ember.NVD3.ChartComponent.extend({
 
 });
 
-Ember.Handlebars.helper('nvd3-line-with-focus', Ember.NVD3.LineWithFocus);
+Ember.Handlebars.helper('nvd3-line-with-focus-chart', Ember.NVD3.LineWithFocusChart);
 
 
 })();
