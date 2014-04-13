@@ -45,12 +45,12 @@ Ember.NVD3.ChartComponent = Ember.Component.extend({
   classNames: ['ember-nvd3'],
 
   data: null,
-  chart: null,
+  _chart: null,
 
-  marginTop: 0,
-  marginRight: 0,
-  marginBottom: 0,
-  marginLeft: 0,
+  marginTop: null,
+  marginRight: null,
+  marginBottom: null,
+  marginLeft: null,
 
   showControl: true,
   showLegend: true,
@@ -58,58 +58,67 @@ Ember.NVD3.ChartComponent = Ember.Component.extend({
   showXAxis: true,
   showYAxis: true,
 
+  xTickFormat: null,
+
+  xAxisTickFormat: null,
+  x2AxisTickFormat: null,
+  yAxisTickFormat: null,
+  y2AxisTickFormat: null,
+
+  x: null,
+  y: null,
+
+  _chartModel: function() {
+    throw new Error('Must change _chartModel in subclass.');
+  }.property(),
+
   init: function() {
     this._super();
   },
 
-  xTickFormat: false,
-
-  xAxisTickFormat: d3.format(',f'),
-  x2AxisTickFormat: d3.format(',f'),
-  yAxisTickFormat: d3.format(',.2f'),
-  y2AxisTickFormat: d3.format(',.2f'),
-
   chartModel: function() {
-    return nv.models.line();
-  }.property(),
+    return nv.models[this.get('_chartModel')]();
+  }.property("_chartModel"),
 
-  didInsertElement: function() {
+  margin: function() {
     var self = this;
-    var $el = self.$();
-    var el = $el.get(0);
-    nv.addGraph(function() {
-      var chart = self.get('chartModel');
-      self.set('chart', chart);
-      self.get('updateChart').apply(self, [el]);
-      return chart;
-    });
-  },
+    var margins = {};
+    if (self.get('marginTop'))
+      margins.top = self.get('marginTop');
+    if (self.get('marginRight'))
+      margins.right = self.get('marginRight');
+    if (self.get('marginBottom'))
+      margins.bottom = self.get('marginBottom');
+    if (self.get('marginLeft'))
+      margins.left = self.get('marginLeft');
+    return margins;
+  }.property('marginTop', 'marginRight','marginBottom','marginLeft'),
 
-  observeData: function() {
-    this.get('updateChart').apply(this, [this.get('element')]);
-  }.observes('data'),
-
-
-  updateChart: function(el) {
-
+  options: function() {
     var self = this;
-    var data = self.get('data');
-    var chart = self.get('chart');
+    return {
+      showControls: self.get('showControls'),
+      showLegend: self.get('showLegend')
+    };
+  }.property('showControls', 'showLegend'),
+
+  chart: function() {
+    var self = this;
+    var chart = self.get('_chart');
+    if (!chart) {
+      chart = self.get('chartModel')
+    }
 
     chart
-      .margin({
-        top: self.get('marginTop'),
-        right: self.get('marginRight'),
-        bottom: self.get('marginBottom'),
-        left: self.get('marginLeft')
-      })
-      .options({
-        showControls: self.get('showControls'),
-        showLegend: self.get('showLegend')
-      })
-      .x(function(d,i) {
-        return i;
-      })
+      .margin(self.get('margin'))
+      .options(self.get('options'));
+
+    if (self.get('x')) {
+      chart.x(self.get('x'));
+    }
+    if (self.get('y')) {
+      chart.y(self.get('y'))
+    }
 
     if (!!chart.xTickFormat && !!self.get('xTickFormat')) {
       chart.xTickFormat(function() {
@@ -125,26 +134,55 @@ Ember.NVD3.ChartComponent = Ember.Component.extend({
     if (chart.showLegend) {
       chart.showLegend(self.get('showLegend'))
     }
-    if (chart.xAxis) {
+    if (chart.xAxis && self.get('xAxisTickFormat')) {
       chart.xAxis.tickFormat(function() {
         return self.get('xAxisTickFormat').apply(self, arguments);
       });
     }
-    if (chart.x2Axis) {
+    if (chart.x2Axis && self.get('x2AxisTickFormat')) {
       chart.xAxis.tickFormat(function() {
         return self.get('x2AxisTickFormat').apply(self, arguments);
       });
     }
-    if (chart.yAxis) {
+    if (chart.yAxis && self.get('yAxisTickFormat')) {
       chart.yAxis.tickFormat(function() {
         return self.get('yAxisTickFormat').apply(self, arguments);
       });
     }
-    if (chart.y2Axis) {
+    if (chart.y2Axis && self.get('y2AxisTickFormat')) {
       chart.y2Axis.tickFormat(function() {
         return self.get('y2AxisTickFormat').apply(self, arguments);
       });
     }
+
+    return self.get('customizeChart').apply(self, [chart]);
+  }.property('chartModel', 'margin', 'options'),
+
+  customizeChart: function(chart) {
+    return chart;
+  },
+
+  didInsertElement: function() {
+    var self = this;
+    var $el = self.$();
+    var el = $el.get(0);
+    console.log(self, $el, el);
+    nv.addGraph(function() {
+      var chart = self.get('chart');
+
+      return chart;
+    });
+  },
+  willDestroyElement: function() {
+
+  },
+
+  updateChart: function() {
+
+    var self = this;
+    var el = self.get('element');
+    var data = self.get('data');
+    var chart = self.get('chart');
 
     d3.select(el)
         .datum(data)
@@ -152,9 +190,9 @@ Ember.NVD3.ChartComponent = Ember.Component.extend({
         .duration(250)
         .call(chart);
 
-    self.set('chart', chart);
+    self.set('_chart', chart);
 
-  }
+  }.observes('data','chart').on('didInsertElement')
 
 });
 
@@ -165,13 +203,60 @@ Ember.NVD3.ChartComponent = Ember.Component.extend({
 
 (function() {
 
+Ember.NVD3.DiscreteBarChart = Ember.NVD3.ChartComponent.extend({
+
+  _chartModel: "discreteBarChart",
+
+  x: function(d,i) {
+    return d.label;
+  },
+  y: function(d,i) {
+    return d.value;
+  },
+
+  customizeChart: function(chart) {
+      chart
+      .staggerLabels(true)
+      //.staggerLabels(historicalBarChart[0].values.length > 8)
+      .tooltips(false)
+      .showValues(true);
+
+      return chart;
+  }
+
+});
+
+Ember.Handlebars.helper('nvd3-discrete-bar-chart', Ember.NVD3.DiscreteBarChart);
+
+
+})();
+
+(function() {
+
+Ember.NVD3.HistoricalBarChart = Ember.NVD3.ChartComponent.extend({
+
+  marginLeft: 100,
+  marginBottom: 100,
+
+  _chartModel: "historicalBarChart",
+
+  xAxisTickFormat: d3.format(',.1f'),
+  yAxisTickFormat: d3.format(',.2f')
+
+});
+
+Ember.Handlebars.helper('nvd3-historical-bar-chart', Ember.NVD3.HistoricalBarChart);
+
+
+})();
+
+(function() {
+
 Ember.NVD3.LineWithFocusChart = Ember.NVD3.ChartComponent.extend({
 
   marginRight: 70,
 
-  chartModel: function() {
-    return nv.models.lineWithFocusChart();
-  }.property(),
+  _chartModel: "lineWithFocusChart"
 
 });
 
@@ -182,19 +267,64 @@ Ember.Handlebars.helper('nvd3-line-with-focus-chart', Ember.NVD3.LineWithFocusCh
 
 (function() {
 
+Ember.NVD3.PieChart = Ember.NVD3.ChartComponent.extend({
+
+  _chartModel: "pieChart",
+
+  x: function(d,i) {
+    return d.key;
+  },
+  y: function(d,i) {
+    return d.y;
+  },
+  color: function() {
+    return d3.scale.category10().range();
+  }.property(),
+
+  donut: false,
+
+  pieStartAngle: function(d) {
+    return d.startAngle/2 -Math.PI/2
+  }.property(),
+  pieEndAngle: function(d) {
+    return d.endAngle/2 -Math.PI/2
+  }.property(),
+
+  customizeChart: function(chart) {
+    console.log('customize pie chart');
+    var self = this;
+    // Basic
+    chart.donut(self.get('donut'));
+    chart.color(self.get('color'));
+    // Pie
+    chart.pie
+    .startAngle(function(d) { return d.startAngle/2 -Math.PI/2 })
+    .endAngle(function(d) { return d.endAngle/2 -Math.PI/2 });
+
+    return chart;
+  }
+
+});
+
+Ember.Handlebars.helper('nvd3-pie-chart', Ember.NVD3.PieChart);
+
+
+})();
+
+(function() {
+
 Ember.NVD3.SparklinePlusComponent = Ember.NVD3.ChartComponent.extend({
 
   marginRight: 70,
 
-  xTickFormat: function(d) {
-    var data = this.get('data');
-    console.log(d, data);
+  x: function(d,i) { return i },
+
+  xTickFormat: function(d, i) {
+    var data = this.get('data', d, i);
     return d3.time.format('%x')(new Date(data[d].x))
   },
 
-  chartModel: function() {
-    return nv.models.sparklinePlus();
-  }.property(),
+  _chartModel: "sparklinePlus"
 
 });
 

@@ -1,6 +1,11 @@
 {
   "name": "ember-nvd3",
   "version": "0.0.0",
+  "author": {
+    "name": "Glavin Wiechert",
+    "email": "glavin.wiechert@gmail.com",
+    "url": "https://github.com/Glavin001"
+  },
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",

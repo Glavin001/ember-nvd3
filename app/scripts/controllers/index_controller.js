@@ -51,7 +51,7 @@ EmberNvd3.IndexController = Ember.ArrayController.extend({
               for (i = 0; i < 5; i++) bump(a);
               return a.map(stream_index);
             });
-        } 
+        }
         function testData() {
           return stream_layers(3,128,.1).map(function(data, i) {
             return {
@@ -60,8 +60,125 @@ EmberNvd3.IndexController = Ember.ArrayController.extend({
             };
           });
         }
-        self.set('lineData', testData());
+        self.set('lineChartData', testData());
 
+
+
+        function sinAndCos() {
+          var sin = [],
+              cos = [];
+
+          for (var i = 0; i < 100; i++) {
+            sin.push({x: i, y: Math.sin(i/10)});
+            cos.push({x: i, y: .5 * Math.cos(i/10)});
+          }
+
+          return [
+            {
+              values: sin,
+              key: "Sine Wave",
+              color: "#ff7f0e"
+            },
+            {
+              values: cos,
+              key: "Cosine Wave",
+              color: "#2ca02c"
+            }
+          ];
+        }
+        function sinData() {
+          var sin = [];
+
+          for (var i = 0; i < 100; i++) {
+            sin.push({x: i, y: Math.sin(i/10)});
+          }
+
+          return [
+            {
+              values: sin,
+              key: "Sine Wave",
+              color: "#ff7f0e"
+            }
+          ];
+        }
+        self.set('historicalBarChartData', sinData());
+
+
+        var historicalBarChart = [
+          {
+            key: "Cumulative Return",
+            values: [
+              {
+                "label" : "A" ,
+                "value" : 29.765957771107
+              } ,
+              {
+                "label" : "B" ,
+                "value" : 0
+              } ,
+              {
+                "label" : "C" ,
+                "value" : 32.807804682612
+              } ,
+              {
+                "label" : "D" ,
+                "value" : 196.45946739256
+              } ,
+              {
+                "label" : "E" ,
+                "value" : 0.19434030906893
+              } ,
+              {
+                "label" : "F" ,
+                "value" : 98.079782601442
+              } ,
+              {
+                "label" : "G" ,
+                "value" : 13.925743130903
+              } ,
+              {
+                "label" : "H" ,
+                "value" : 5.1387322875705
+              }
+            ]
+          }
+        ];
+        self.set('discreteBarChartData', historicalBarChart);
+
+
+
+        var testdata = [
+          {
+            key: "One",
+            y: 5
+          },
+          {
+            key: "Two",
+            y: 2
+          },
+          {
+            key: "Three",
+            y: 9
+          },
+          {
+            key: "Four",
+            y: 7
+          },
+          {
+            key: "Five",
+            y: 4
+          },
+          {
+            key: "Six",
+            y: 3
+          },
+          {
+            key: "Seven",
+            y: .5
+          }
+        ];
+        self.set('pieChartData', testdata);
+        
     },
     refresh: function() {
       this.send('genData');
