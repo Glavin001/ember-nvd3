@@ -28,5 +28,9 @@ Then build with `grunt`.
 grunt serve
 ```
 
+## Documentation
 
-
+Uses [grunt-jsdoc](https://github.com/krampstudio/grunt-jsdoc) to create documentation. To create simple run
+```bash
+grunt docs
+```

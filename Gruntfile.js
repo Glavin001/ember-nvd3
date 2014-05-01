@@ -2,8 +2,9 @@
 'use strict';
 var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
+var path = require('path');
 var mountFolder = function (connect, dir) {
-    return connect.static(require('path').resolve(dir));
+    return connect.static(path.resolve(dir));
 };
 
 // # Globbing
@@ -23,7 +24,8 @@ module.exports = function (grunt) {
         app: 'app',
         dist: 'dist',
         lib: 'lib',
-        build: 'build'
+        build: 'build',
+        docs: 'docs'
     };
 
     grunt.initConfig({
@@ -64,6 +66,12 @@ module.exports = function (grunt) {
                     '<%= yeoman.lib %>/templates/{,*/}*.hbs',
                     '<%= yeoman.lib %>/**/*.js'
                 ]
+            },
+            docs: {
+                files: [
+                    '<%= yeoman.lib %>/*'
+                ],
+                tasks: ['jsdoc']
             }
         },
         connect: {
@@ -107,6 +115,9 @@ module.exports = function (grunt) {
         open: {
             server: {
                 path: 'http://localhost:<%= connect.options.port %>'
+            },
+            docs: {
+                path: path.join(__dirname, '<%= yeoman.docs %>/index.html')
             }
         },
         clean: {
@@ -367,6 +378,17 @@ module.exports = function (grunt) {
               src: '<%= yeoman.lib %>/lib.js',
               dest: '<%= yeoman.build %>/ember-nvd3.js'
             }
+        },
+        jsdoc: {
+            dist: {
+                jsdoc: './node_modules/.bin/jsdoc',
+                src: ['<%= yeoman.lib %>/*', 'docstheme/INDEXREADME.md'],
+                options: {
+                    destination: 'docs',
+                    template: 'docstheme/',
+                    configure: 'docstheme/jsdoc.conf.json'
+                }
+            }
         }
     });
 
@@ -426,5 +448,10 @@ module.exports = function (grunt) {
         'jshint',
         'test',
         'build'
+    ]);
+
+    grunt.registerTask('docs', [
+        'jsdoc',
+        'open:docs'
     ]);
 };
