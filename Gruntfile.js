@@ -404,6 +404,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
+            'jsdoc',
             'lib',
             'replace:app',
             'concurrent:server',
@@ -436,7 +437,8 @@ module.exports = function (grunt) {
         'uglify',
         'copy',
         'rev',
-        'usemin'
+        'usemin',
+        'jsdoc'
     ]);
 
     grunt.registerTask('lib', [

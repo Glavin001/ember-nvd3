@@ -7,7 +7,8 @@
     "ember-data": "^1.0.0-beta.5",
     "bootstrap-sass": "^3.0.0",
     "d3": "~3.3.13",
-    "jquery": "^2.1.0"
+    "jquery": "^2.1.0",
+    "nvd3": "~1.1.15-beta"
   },
   "devDependencies": {
     "ember-mocha-adapter": "0.1.2"
