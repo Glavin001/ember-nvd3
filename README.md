@@ -13,6 +13,24 @@
 bower install --save ember-nvd3
 ```
 
+### Include D3 amd NVD3 styles and scripts
+
+```html
+<!-- NVD3 Styles -->
+<link rel="stylesheet" href="bower_components/nvd3/nv.d3.min.css">
+<!-- D3 Script -->
+<script src="bower_components/d3/d3.min.js"></script>
+<!-- NVD3 Script -->
+<script src="bower_components/nvd3/nv.d3.min.js"></script>
+```
+
+### Include Ember-NVD3 styles and scripts
+
+```html
+<!-- Ember NVD3 Script -->
+<script src="bower_components/ember-nvd3/build/ember-nvd3.js"></script>
+```
+
 ## Developing
 
 After cloning repository, install library dependencies.
@@ -30,9 +48,10 @@ grunt serve
 
 ### Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.  
+Clone this JS Bin from http://jsbin.com/kawur/1/edit and submit it with your bug reports.
 
-## Documentation
+### Documentation
 
 Uses [grunt-jsdoc](https://github.com/krampstudio/grunt-jsdoc) to create documentation. To create simple run
 ```bash
