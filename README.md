@@ -13,7 +13,7 @@
 bower install --save ember-nvd3
 ```
 
-### Include D3 amd NVD3 styles and scripts
+### Include D3 and NVD3 styles and scripts
 
 ```html
 <!-- NVD3 Styles -->
@@ -24,7 +24,7 @@ bower install --save ember-nvd3
 <script src="bower_components/nvd3/nv.d3.min.js"></script>
 ```
 
-### Include Ember-NVD3 styles and scripts
+### Include Ember NVD3 styles and scripts
 
 ```html
 <!-- Ember NVD3 Script -->
