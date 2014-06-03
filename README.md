@@ -31,6 +31,13 @@ bower install --save ember-nvd3
 <script src="bower_components/ember-nvd3/build/ember-nvd3.js"></script>
 ```
 
+### Usage Examples
+
+- Live demos: http://glavin001.github.io/ember-nvd3/dist/
+- Basic example, `line-with-focus-chart` component: http://jsbin.com/kawur/1/edit
+- Advanced Customization by overriding `customizeChart` method: http://jsbin.com/rareh/4/edit
+
+
 ## Developing
 
 After cloning repository, install library dependencies.
