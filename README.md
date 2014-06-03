@@ -5,6 +5,8 @@
 
 **Live demo**: http://glavin001.github.io/ember-nvd3/dist/
 
+Alternatively take a look at [Ember-C3](https://github.com/Glavin001/ember-c3) for your charting needs.
+
 -----
 
 ## Usage
